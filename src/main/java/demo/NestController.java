@@ -41,22 +41,30 @@ public class NestController {
 //		employeeRepository.getThermoById("TB36giw8Mpqza4S-9dphVWRJTWVz7JnV");
 //	}
 
-    @RequestMapping(value="/greeting", method= RequestMethod.GET, produces = {"application/json"} )
+    @RequestMapping(value="/fetchdata/thermostat/{voiceCommand}", method= RequestMethod.GET, produces = {"application/json"} )
     @ResponseStatus(HttpStatus.OK)
-    public String test() throws Exception
+    public String thermostat_state(@PathVariable("voiceCommand") String voiceCommand) throws Exception
     {
 
-		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("one")),SmartDevice.class,"smartdevices");
+		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("one")), SmartDevice.class, "smartdevices");
 		List<String> coldData=result.getColdData();
 		List<String> warmData=result.getHotData();
 		System.out.println("serial no"+result.getSerial_no()+result.getColdData().get(0));
 		String temp="It is cold";
-		tokenize_words(temp, coldData, warmData);
+		int flag=tokenize_words(voiceCommand, coldData, warmData);
+		if(flag==1){
+			System.out.println("Okay!! Turning on the thermostat");
+		}else if(flag==2){
+			System.out.println("Okay!!Turning off the thermostat");
+
+		}else{
+			System.out.println("Sorry,Did not perform any operation");
+		}
 		//System.out.println("result="+result.getId());
         return "hello world";
     }
 
-	public void tokenize_words(String temp,List<String>coldData,List<String> warmData){
+	public int tokenize_words(String temp,List<String>coldData,List<String> warmData){
 		String[] words =temp.split(" ");
 		String word="";
 		int flag=0;
@@ -66,23 +74,52 @@ public class NestController {
 			//Check if the word is there in array set up
 			for(int j=0;j<coldData.size();j++){
 				if(coldData.get(j).compareToIgnoreCase(word)==0){
-					System.out.println("Okay turning on the thermostat");
+					System.out.println("Device switched on");
 					flag=1;break;
 				}
 			}
 			if(flag==0){
 				for(int k=0;k<warmData.size();k++){
 					if(warmData.get(k).compareToIgnoreCase(word)==0){
-						System.out.print("okay!! turning off the thermostat");
-						flag=1;break;
+						System.out.print("Device switched off");
+						flag=2;break;
 					}
 				}
 			}
-			if(flag==1){
+			if(flag==1||flag==2){
 				break;
 			}
 		}
+		return flag;
 	}
+
+	@RequestMapping(value="/fetchdata/light/{voiceCommand}", method= RequestMethod.GET, produces = {"application/json"} )
+	@ResponseStatus(HttpStatus.OK)
+	public String light_state(@PathVariable("voiceCommand") String voiceCommand) throws Exception
+	{
+
+		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("two")), SmartDevice.class, "smartdevices");
+		List<String> onData=result.getColdData();
+		List<String> offData=result.getHotData();
+		System.out.println("serial no"+result.getSerial_no()+result.getColdData().get(0));
+		String temp="turn on light";
+		int flag= tokenize_words(voiceCommand, onData, offData);
+
+		if(flag==1){
+			//call the turn on light api
+			System.out.println("Okay!! Turning on the light");
+		}else if(flag==2){
+			//call the turn off light api
+			System.out.println("Okay!!Turning off the light");
+
+		}else{
+			System.out.println("Sorry,Did not perform any operation");
+		}
+		//System.out.println("result="+result.getId());
+		return "hello world";
+	}
+
+
 	@RequestMapping("/thermo/{thermoId}")
 	public ResponseEntity<String> getThermostat(@PathVariable("thermoId") String thermoId)
 			throws IOException {
