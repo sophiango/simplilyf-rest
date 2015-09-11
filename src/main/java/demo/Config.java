@@ -18,8 +18,8 @@ public class Config {
     @Bean
     public MongoTemplate mongoTemplate() throws Exception
     {
-        MongoClientURI uri = new MongoClientURI("mongodb://cmpe:295@ds027483.mongolab.com:27483/cmpe295");
-        MongoDbFactory mongoDbFactory =  new SimpleMongoDbFactory(new MongoClient(uri),"cmpe295");
+        MongoClientURI uri = new MongoClientURI("mongodb://cmpe:295@ds041571.mongolab.com:41571/team295");
+        MongoDbFactory mongoDbFactory =  new SimpleMongoDbFactory(new MongoClient(uri),"team295");
         MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory);
         return mongoTemplate;
     }
