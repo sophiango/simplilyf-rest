@@ -4,6 +4,8 @@ package demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -11,6 +13,7 @@ import org.apache.http.client.methods.HttpPut;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 public class NestController {
@@ -43,9 +46,44 @@ public class NestController {
     @ResponseStatus(HttpStatus.OK)
     public String test() throws Exception
     {
+
+		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("one")),SmartDevice.class,"smartdevices");
+		List<String> coldData=result.getColdData();
+		List<String> warmData=result.getHotData();
+		System.out.println("serial no"+result.getSerial_no()+result.getColdData().get(0));
+		String temp="It is cold";
+		tokenize_words(temp, coldData, warmData);
+		//System.out.println("result="+result.getId());
         return "hello world";
     }
 
+	public void tokenize_words(String temp,List<String>coldData,List<String> warmData){
+		String[] words =temp.split(" ");
+		String word="";
+		int flag=0;
+		for(int i=0;i<words.length;i++){
+			word=words[i];
+			flag=0;
+			//Check if the word is there in array set up
+			for(int j=0;j<coldData.size();j++){
+				if(coldData.get(j).compareToIgnoreCase(word)==0){
+					System.out.println("Okay turning on the thermostat");
+					flag=1;break;
+				}
+			}
+			if(flag==0){
+				for(int k=0;k<warmData.size();k++){
+					if(warmData.get(k).compareToIgnoreCase(word)==0){
+						System.out.print("okay!! turning off the thermostat");
+						flag=1;break;
+					}
+				}
+			}
+			if(flag==1){
+				break;
+			}
+		}
+	}
 	@RequestMapping("/thermo/{thermoId}")
 	public ThermoDO getThermostat(@PathVariable("thermoId") String thermoId)
 			throws IOException {
