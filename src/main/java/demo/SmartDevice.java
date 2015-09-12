@@ -15,6 +15,7 @@ public class SmartDevice {
     private List<String> up;
     private List<String> down;
     private  String serial_no;
+
     public String getSerial_no() {
         return serial_no;
     }
@@ -22,7 +23,20 @@ public class SmartDevice {
     public void setSerial_no(String serial_no) {
         this.serial_no = serial_no;
     }
+    public List<String> getUp() {
+        return up;
+    }
 
+    public void setUp(List<String> up) {
+        this.up = up;
+    }
+    public List<String> getDown() {
+        return down;
+    }
+
+    public void setDown(List<String> down) {
+        this.down = down;
+    }
     public String getId() {
         System.out.println("getId");
         return id;
@@ -30,21 +44,5 @@ public class SmartDevice {
     public void setId(String id) {
         System.out.println("setId");
         this.id = id;
-    }
-    public List<String> getColdData() {
-        System.out.println("Array of cold synonym");
-        return down;
-    }
-    public void setColdData(List<String> coldname) {
-        System.out.println("set cold data");
-        this.down = down;
-    }
-    public List<String> getHotData() {
-        System.out.println("Array of cold synonym");
-        return up;
-    }
-    public void setHotData(List<String> hotname) {
-        System.out.println("set warm data");
-        this.up=up;
     }
 }

@@ -48,11 +48,11 @@ public class NestController {
     {
 
 		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("one")), SmartDevice.class, "smartdevices");
-		List<String> coldData=result.getColdData();
-		List<String> warmData=result.getHotData();
-		System.out.println("serial no"+result.getSerial_no()+result.getColdData().get(0));
-		String temp="It is cold";
-		int flag=tokenize_words(voiceCommand, coldData, warmData);
+		List<String> downData=result.getDown();
+		List<String> upData=result.getUp();
+		System.out.println("serial no"+ result.getSerial_no()+ result.getDown().get(0));
+		String temp="turn on the thermostat";
+		int flag=tokenize_words(voiceCommand, downData, upData);
 		if(flag==1){
 			System.out.println("Okay!! Turning on the thermostat");
 		}else if(flag==2){
@@ -65,23 +65,47 @@ public class NestController {
         return "hello world";
     }
 
-	public int tokenize_words(String temp,List<String>coldData,List<String> warmData){
+	public int tokenize_words(String temp,List<String>downData,List<String> upData){
 		String[] words =temp.split(" ");
 		String word="";
 		int flag=0;
 		for(int i=0;i<words.length;i++){
 			word=words[i];
 			flag=0;
-			//Check if the word is there in array set up
-			for(int j=0;j<coldData.size();j++){
-				if(coldData.get(j).compareToIgnoreCase(word)==0){
+			 if(word.compareToIgnoreCase("turn")==0){
+				 if(words[i+1].compareToIgnoreCase("on")==0){
+					 word=word.concat(" on");
+					 System.out.println("concatenated word" + word);
+					 i=i+1;
+				 }
+				 if(words[i+1].compareToIgnoreCase("off")==0){
+					 word=word.concat(" off");
+					 System.out.println("concatenated word" + word);
+					 i=i+1;
+				 }
+			 }
+			if(word.compareToIgnoreCase("switch")==0){
+				if(words[i+1].compareToIgnoreCase("on")==0){
+					word=word.concat(" on");
+					System.out.println("concatenated word" + word);
+					i=i+1;
+				}
+				if(words[i+1].compareToIgnoreCase("off")==0){
+					word=word.concat(" off");
+					System.out.println("concatenated word" + word);
+					i=i+1;
+				}
+			}
+			//Check if the word is there in array set down(turn off,light)
+			for(int j=0;j<downData.size();j++){
+				if(downData.get(j).compareToIgnoreCase(word)==0){
 					System.out.println("Device switched on");
 					flag=1;break;
 				}
 			}
 			if(flag==0){
-				for(int k=0;k<warmData.size();k++){
-					if(warmData.get(k).compareToIgnoreCase(word)==0){
+				for(int k=0;k<upData.size();k++){
+					if(upData.get(k).compareToIgnoreCase(word)==0){
 						System.out.print("Device switched off");
 						flag=2;break;
 					}
@@ -94,15 +118,15 @@ public class NestController {
 		return flag;
 	}
 
-	@RequestMapping(value="/fetchdata/light/{voiceCommand}", method= RequestMethod.GET, produces = {"application/json"} )
+	@RequestMapping(value="/fetchdata/light/voiceCommand", method= RequestMethod.GET, produces = {"application/json"} )
 	@ResponseStatus(HttpStatus.OK)
 	public String light_state(@PathVariable("voiceCommand") String voiceCommand) throws Exception
 	{
 
 		SmartDevice result=mongoTemplate.findOne(new Query(Criteria.where("serial_no").is("two")), SmartDevice.class, "smartdevices");
-		List<String> onData=result.getColdData();
-		List<String> offData=result.getHotData();
-		System.out.println("serial no"+result.getSerial_no()+result.getColdData().get(0));
+		List<String> offData=result.getDown();
+		List<String> onData=result.getUp();
+		System.out.println("serial no"+ result.getSerial_no()+ result.getDown().get(0));
 		String temp="turn on light";
 		int flag= tokenize_words(voiceCommand, onData, offData);
 
