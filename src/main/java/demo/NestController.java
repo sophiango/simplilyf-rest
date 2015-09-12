@@ -1,6 +1,7 @@
 package demo;
 
 
+import javafx.scene.effect.Light;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,8 +26,9 @@ public class NestController {
 
 	public static final String BASE_URL = "https://developer-api.nest.com";
 	public static final String PIN_CODE = "KN2JFH6B";
-	public static final String ACCESS_TOKEN = "c.CkIEtPt2WhY7F5FAOC16CesXtDIGkhBYJUdbJo1IYRUptBuSOphqBV4Y3TCe0b7Q2nZhLcetFXzul6dnCCoQn1AgaQEnZZx7hWRMiGHkoI2ICByBKRtdM9FfHfpjcmyKlVrj63QGkYq66gLZ";
 	public static final String COLLECTION_NAME = "nest_data";
+	public static final String LIGHT_COLLECTION_NAME = "light_data";
+    public static final String ACCESS_TOKEN = "c.CkIEtPt2WhY7F5FAOC16CesXtDIGkhBYJUdbJo1IYRUptBuSOphqBV4Y3TCe0b7Q2nZhLcetFXzul6dnCCoQn1AgaQEnZZx7hWRMiGHkoI2ICByBKRtdM9FfHfpjcmyKlVrj63QGkYq66gLZ";
 
 	// @RequestMapping("/thermo/{thermoId}")
 	// public @ResponseBody ThermoDO findThermoById(
@@ -162,8 +164,7 @@ public class NestController {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<String> entity = new HttpEntity<String>("parameters",
-				headers);
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 		ResponseEntity<ThermoDO> response = restTemplate.exchange(
                 get_thermo_by_id, HttpMethod.GET, entity, ThermoDO.class);
 		mongoTemplate.insert(response, COLLECTION_NAME);
@@ -179,15 +180,51 @@ public class NestController {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-		HttpEntity<String> entity = new HttpEntity<String>("parameters",
-				headers);
-		ResponseEntity<String> response = restTemplate.exchange(
-                get_all_thermo_url, HttpMethod.GET, entity, String.class);
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		ResponseEntity<String> response = restTemplate.exchange(get_all_thermo_url, HttpMethod.GET, entity, String.class);
 		System.out.println(response);
 		return response;
 
 	}
 
+	@RequestMapping("/lights/{lightId}")
+	public ResponseEntity<String> getLight(@PathVariable("lightId") String lightId) throws IOException{
+		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+		ctx.register(Config.class);
+		ctx.refresh();
+		if (!mongoTemplate.collectionExists(LIGHT_COLLECTION_NAME)) {
+			mongoTemplate.createCollection(LIGHT_COLLECTION_NAME);
+		}
+
+		final String get_light_info_by_id = "http://localhost:8000/api/newdeveloper/lights/" + lightId;
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		ResponseEntity<String> response =  restTemplate.exchange(get_light_info_by_id, HttpMethod.GET, entity, String.class);
+
+		System.out.println(response);
+		System.out.println(response);
+		mongoTemplate.insert(response, LIGHT_COLLECTION_NAME);
+		return response;
+	}
+
+	@RequestMapping("/allLights")
+	public ResponseEntity<String> getAllLights() throws IOException{
+
+		final String get_light_info = "http://localhost:80/api/newdeveloper/lights";
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		ResponseEntity<String> response =  restTemplate.exchange(get_light_info, HttpMethod.GET, entity, String.class);
+		System.out.println(response);
+		return response;
+	}
     @RequestMapping("/thermo/{thermoId}/changeTemperature/{updatedTemp}")
     public void changeTargetTemperature(@PathVariable("thermoId") String thermoId, @PathVariable("updatedTemp") String updatedTemp) throws IOException {
 
