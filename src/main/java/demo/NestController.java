@@ -1,6 +1,7 @@
 package demo;
 
 
+import com.mongodb.util.JSON;
 import javafx.scene.effect.Light;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -142,7 +143,7 @@ public class NestController {
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 		ResponseEntity<ThermoDO> response = restTemplate.exchange(
-                get_thermo_by_id, HttpMethod.GET, entity, ThermoDO.class);
+				get_thermo_by_id, HttpMethod.GET, entity, ThermoDO.class);
 		mongoTemplate.insert(response, COLLECTION_NAME);
 		return response.getBody();
 
@@ -164,7 +165,7 @@ public class NestController {
 	}
 
 	@RequestMapping("/lights/{lightId}")
-	public ResponseEntity<String> getLight(@PathVariable("lightId") String lightId) throws IOException{
+	public LightDO getLight(@PathVariable("lightId") String lightId) throws IOException{
 		AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 		ctx.register(Config.class);
 		ctx.refresh();
@@ -179,11 +180,31 @@ public class NestController {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-		ResponseEntity<String> response =  restTemplate.exchange(get_light_info_by_id, HttpMethod.GET, entity, String.class);
+		ResponseEntity<LightDO> response =  restTemplate.exchange(get_light_info_by_id, HttpMethod.GET, entity, LightDO.class);
 
 		System.out.println(response);
 		System.out.println(response);
 		mongoTemplate.insert(response, LIGHT_COLLECTION_NAME);
+		return response.getBody();
+	}
+
+	@RequestMapping("/lights/{lightId}/state/{isOn}")
+	public ResponseEntity<String> getLightState(@PathVariable String lightId, @PathVariable String isOn) throws IOException{
+
+		final String get_light_on_state = "http://localhost:8000/api/newdeveloper/lights/" + lightId + "/state";
+
+		System.out.println(isOn);
+
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+		ResponseEntity<String> response =  restTemplate.exchange(get_light_on_state, HttpMethod.GET, entity, String.class);
+//
+//		System.out.println(response);
+		System.out.println(response);
 		return response;
 	}
 
