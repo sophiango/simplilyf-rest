@@ -3,32 +3,30 @@ package demo;
 import com.sun.istack.internal.NotNull;
 
 import java.security.Timestamp;
-import java.util.UUID;
 
 public class ThermoDO {
-	private String name;
-    private UUID where_id;
     @NotNull
-	private String device_id;
+    private String device_id;
+	private String name;
+    private String where_id;
 
     // DESIRED TEMPERATURE
 	private int target_temperature_f;
-	private float target_temperature_c;
+	private double target_temperature_c;
 	private int target_temperature_high_f;
-	private float target_temperature_high_c;
-
+	private double target_temperature_high_c;
 	private int target_temperature_low_f;
-	private float target_temperature_low_c;
+	private double target_temperature_low_c;
 
     // TEMPERATURE SET FOR AWAY MODE
 	private int away_temperature_high_f;
-	private float away_temperature_high_c;
+	private double away_temperature_high_c;
 	private int away_temperature_low_f;
-	private float away_temperature_low_c;
+	private double away_temperature_low_c;
 
     // TEMPERATURE MEASURE AT DEVICE
 	private int ambient_temperature_f;
-	private float ambient_temperature_c;
+	private double ambient_temperature_c;
 
 	private int humidity;
 
@@ -49,11 +47,11 @@ public class ThermoDO {
         this.name = name;
     }
 
-    public UUID getWhere_id() {
+    public String getWhere_id() {
         return where_id;
     }
 
-    public void setWhere_id(UUID where_id) {
+    public void setWhere_id(String where_id) {
         this.where_id = where_id;
     }
 
@@ -73,11 +71,11 @@ public class ThermoDO {
         this.target_temperature_f = target_temperature_f;
     }
 
-    public float getTarget_temperature_c() {
+    public double getTarget_temperature_c() {
         return target_temperature_c;
     }
 
-    public void setTarget_temperature_c(float target_temperature_c) {
+    public void setTarget_temperature_c(double target_temperature_c) {
         this.target_temperature_c = target_temperature_c;
     }
 
@@ -89,11 +87,11 @@ public class ThermoDO {
         this.target_temperature_high_f = target_temperature_high_f;
     }
 
-    public float getTarget_temperature_high_c() {
+    public double getTarget_temperature_high_c() {
         return target_temperature_high_c;
     }
 
-    public void setTarget_temperature_high_c(float target_temperature_high_c) {
+    public void setTarget_temperature_high_c(double target_temperature_high_c) {
         this.target_temperature_high_c = target_temperature_high_c;
     }
 
@@ -105,11 +103,11 @@ public class ThermoDO {
         this.target_temperature_low_f = target_temperature_low_f;
     }
 
-    public float getTarget_temperature_low_c() {
+    public double getTarget_temperature_low_c() {
         return target_temperature_low_c;
     }
 
-    public void setTarget_temperature_low_c(float target_temperature_low_c) {
+    public void setTarget_temperature_low_c(double target_temperature_low_c) {
         this.target_temperature_low_c = target_temperature_low_c;
     }
 
@@ -121,11 +119,11 @@ public class ThermoDO {
         this.away_temperature_high_f = away_temperature_high_f;
     }
 
-    public float getAway_temperature_high_c() {
+    public double getAway_temperature_high_c() {
         return away_temperature_high_c;
     }
 
-    public void setAway_temperature_high_c(float away_temperature_high_c) {
+    public void setAway_temperature_high_c(double away_temperature_high_c) {
         this.away_temperature_high_c = away_temperature_high_c;
     }
 
@@ -137,11 +135,11 @@ public class ThermoDO {
         this.away_temperature_low_f = away_temperature_low_f;
     }
 
-    public float getAway_temperature_low_c() {
+    public double getAway_temperature_low_c() {
         return away_temperature_low_c;
     }
 
-    public void setAway_temperature_low_c(float away_temperature_low_c) {
+    public void setAway_temperature_low_c(double away_temperature_low_c) {
         this.away_temperature_low_c = away_temperature_low_c;
     }
 
@@ -153,11 +151,11 @@ public class ThermoDO {
         this.ambient_temperature_f = ambient_temperature_f;
     }
 
-    public float getAmbient_temperature_c() {
+    public double getAmbient_temperature_c() {
         return ambient_temperature_c;
     }
 
-    public void setAmbient_temperature_c(float ambient_temperature_c) {
+    public void setAmbient_temperature_c(double ambient_temperature_c) {
         this.ambient_temperature_c = ambient_temperature_c;
     }
 
